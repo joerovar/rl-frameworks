@@ -2,9 +2,10 @@ import gym
 import numpy as np
 from ppo_torch import Agent
 from utils import plot_learning_curve
+from torch.utils.tensorboard import SummaryWriter
 
 if __name__ == '__main__':
-    env = gym.make('CartPole-v0')
+    env = gym.make('CartPole-v1')
     N = 20
     batch_size = 5
     n_epochs = 4
@@ -12,13 +13,14 @@ if __name__ == '__main__':
     agent = Agent(n_actions=env.action_space.n, batch_size=batch_size,
                   alpha=alpha, n_epochs=n_epochs, input_dims=env.observation_space.shape)
     n_games = 300
-    figure_file = 'plots/carpole.png'
+    figure_file = 'plots/cartpole.png'
     best_score = env.reward_range[0]
     score_history = []
     learn_iters = 0
     avg_score = 0
     n_steps = 0
 
+    writer = SummaryWriter()
     for i in range(n_games):
         observation = env.reset()
         done = False
@@ -42,6 +44,9 @@ if __name__ == '__main__':
 
         print('episode', i, 'score %.1f' % score, 'avg score %.1f' % avg_score, 'time_steps', n_steps, 'learning_steps',
               learn_iters)
+        writer.add_scalar('avg score', avg_score, i)
+
+    writer.close()
 
     x = [i+1 for i in range(len(score_history))]
     plot_learning_curve(x, score_history, figure_file)
