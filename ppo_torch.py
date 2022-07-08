@@ -94,14 +94,12 @@ class CriticNetwork(nn.Module):
             nn.ReLU(),
             nn.Linear(fc2_dims, 1)
         )
-
         self.optimizer = optim.Adam(self.parameters(), lr=alpha)
         self.device = T.device('cuda:0' if T.cuda.is_available() else 'cpu')
         self.to(self.device)
 
     def forward(self, state):
         value = self.critic(state)
-
         return value
 
     def save_checkpoint(self):
@@ -146,7 +144,6 @@ class PPOAgent:
         probs = T.squeeze(dist.log_prob(action)).item()
         action = T.squeeze(action).item()
         value = T.squeeze(value).item()
-
         return action, probs, value
 
     def learn(self):

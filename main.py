@@ -12,7 +12,7 @@ if __name__ == '__main__':
     alpha = 0.0003
     agent = PPOAgent(n_actions=env.action_space.n, batch_size=batch_size,
                      alpha=alpha, n_epochs=n_epochs, input_dims=env.observation_space.shape)
-    n_games = 300
+    n_games = 3
     figure_file = 'plots/cartpole.png'
     best_score = env.reward_range[0]
     score_history = []
@@ -30,6 +30,8 @@ if __name__ == '__main__':
             observation_, reward, done, info = env.step(action)
             n_steps += 1
             score += reward
+            print(observation, action, prob, val, reward, done)
+            # print(type(observation), type(action), type(prob), type(val), type(reward), type(done))
             agent.remember(observation, action, prob, val, reward, done)
             if n_steps % N == 0:
                 agent.learn()
